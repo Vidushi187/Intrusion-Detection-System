@@ -53,6 +53,7 @@ Modern critical infrastructure networks generate heterogeneous sensory traffic c
 An adaptive, reinforcement-learning-driven analytics engine is required to observe sensory network telemetry, estimate threat states, predict high-confidence threat classifications, and maintain high detection accuracy with minimized false alarm rates.
 
 flowchart LR
+```mermaid
 
     A\[Sensory Network Telemetry\\nTraffic Logs & Sensor Bursts\] \--\> B\[Data Ingestion & Normalization\\nOne-Hot Encoding & Range Scaling\]
 
@@ -66,6 +67,7 @@ flowchart LR
 
     F \--\> G\[Incident Response & SOC Dispatch\]
 
+```
 ---
 
 ## 3\. Business Goals & Success Metrics (KPIs)
