@@ -52,21 +52,14 @@ Modern critical infrastructure networks generate heterogeneous sensory traffic c
 
 An adaptive, reinforcement-learning-driven analytics engine is required to observe sensory network telemetry, estimate threat states, predict high-confidence threat classifications, and maintain high detection accuracy with minimized false alarm rates.
 
-```mermaid flowchart LR
-
-
-    A[Sensory Network Telemetry\\nTraffic Logs & Sensor Bursts] \--> B[Data Ingestion & Normalization\\nOne-Hot Encoding & Range Scaling]
-
-    B \--> C[Reinforcement Learning Engine\\nQ-Learning & Experience Replay]
-
-    C \--> D[Threat Classification Module]
-
-    D \--> E[Normal Traffic\\nAuto-Approved]
-
-    D \--> F[Classified Attack Alert\\nDoS, Probe, U2R, R2L]
-
-    F \--> G[Incident Response & SOC Dispatch]
-
+```mermaid
+flowchart LR
+    A["Sensory Network Telemetry<br/>Traffic Logs & Sensor Bursts"] --> B["Data Ingestion & Normalization<br/>One-Hot Encoding & Range Scaling"]
+    B --> C["Reinforcement Learning Engine<br/>Q-Learning & Experience Replay"]
+    C --> D["Threat Classification Module"]
+    D --> E["Normal Traffic<br/>Auto-Approved"]
+    D --> F["Classified Attack Alert<br/>DoS, Probe, U2R, R2L"]
+    F --> G["Incident Response & SOC Dispatch"]
 ```
 ---
 
@@ -127,19 +120,15 @@ The success of the platform SHALL be measured against the following empirical be
 
 ## 5\. Stakeholder Analysis & User Personas
 
+```mermaid
 graph TD
-
     A[Project Stakeholders]
-
-    A \--> B[Security Operations Center Analyst]
-
-    A \--> C[Critical Infrastructure Operator]
-
-    A \--> D[Network Security Architect]
-
-    A \--> E[Machine Learning Engineer]
-
-    A \--> F[Compliance & Audit Officer]
+    A --> B[Security Operations Center Analyst]
+    A --> C[Critical Infrastructure Operator]
+    A --> D[Network Security Architect]
+    A --> E[Machine Learning Engineer]
+    A --> F["Compliance & Audit Officer"]
+```
 
 ### 5.1 Stakeholder Matrix
 
@@ -190,111 +179,61 @@ graph TD
 | **BR-2.5** | **Should Have** | Privilege Escalation (U2R) Recognition | The system SHOULD identify unauthorized local superuser access attempts (including Buffer Overflow, LoadModule, Perl, Rootkit, SqlAttack, Xterm) under the U2R threat family. | Telemetry records exhibiting root access attempts and unauthorized system privilege requests are flagged as U2R. |
 | **BR-2.6** | **Should Have** | Remote Intrusion (R2L) Recognition | The system SHOULD identify unauthorized remote access attempts (including Guess Password, FTP Write, Imap, Multihop, Phf, Spy, WarezClient, WarezMaster, Sendmail, Worm) under the R2L threat family. | Remote brute force and exploit attempts are categorized as R2L. |
 
+```mermaid
 classDiagram
-
     class ThreatTaxonomy {
-
-        \<\<enumeration>>
-
+        <<enumeration>>
         NORMAL
-
         DOS
-
         PROBE
-
         U2R
-
         R2L
-
     }
-
     class DoSAttacks {
-
         Neptune
-
         Smurf
-
         Back
-
         Teardrop
-
         Pod
-
         Land
-
         Apache2
-
         Mailbomb
-
         ProcessTable
-
         UDPStorm
-
     }
-
     class ProbeAttacks {
-
         Portsweep
-
         IPsweep
-
         Nmap
-
         Satan
-
         Mscan
-
         Saint
-
     }
-
     class U2RAttacks {
-
-        Buffer\_Overflow
-
+        Buffer_Overflow
         LoadModule
-
         Perl
-
         Rootkit
-
         SqlAttack
-
         Xterm
-
     }
-
     class R2LAttacks {
-
-        Guess\_Password
-
-        FTP\_Write
-
+        Guess_Password
+        FTP_Write
         Imap
-
         Multihop
-
         Phf
-
         Spy
-
         WarezClient
-
         WarezMaster
-
         Sendmail
-
         Worm
-
     }
-
-    ThreatTaxonomy \<|-- DoSAttacks : maps to
-
-    ThreatTaxonomy \<|-- ProbeAttacks : maps to
-
-    ThreatTaxonomy \<|-- U2RAttacks : maps to
-
-    ThreatTaxonomy \<|-- R2LAttacks : maps to
+    ThreatTaxonomy <|-- DoSAttacks : maps to
+    ThreatTaxonomy <|-- ProbeAttacks : maps to
+    ThreatTaxonomy <|-- U2RAttacks : maps to
+    ThreatTaxonomy <|-- R2LAttacks : maps to
+```
 
 ### 6.3 Reinforcement Learning Decision Engine Requirements (BR-3.0)
 
@@ -308,37 +247,25 @@ classDiagram
 | **BR-3.6** | **Must Have** | Experience Replay Memory Buffer | The system SHALL maintain an experiential memory buffer storing past transitions (state, action, reward, next state) and draw random mini-batch samples during optimization. | Memory buffer stores up to 300 historical transitions; random uniform sampling breaks temporal correlation and yields metric variance under \$3.0%\$. |
 | **BR-3.7** | **Should Have** | Adaptive Optimizer Support | The system SHOULD utilize adaptive moment estimation (Adam) as the primary learning optimizer to adjust individual learning rates across sparse sensory features. | Adam optimizer achieves \$\\ge 96.0%\$ multi-class accuracy, outperforming classical Stochastic Gradient Descent (\$88\\text{--}92%\$). |
 
+```mermaid
 stateDiagram-v2
-
-    [\*] \--> Ingestion: New Telemetry Batch
-
-    Ingestion \--> StateExtraction: Normalize & Format
-
-    StateExtraction \--> PolicyEvaluation: Observe State (s)
-
-    
+    [*] --> Ingestion: New Telemetry Batch
+    Ingestion --> StateExtraction: Normalize & Format
+    StateExtraction --> PolicyEvaluation: Observe State (s)
 
     state PolicyEvaluation {
-
-        [\*] \--> CheckEpsilon
-
-        CheckEpsilon \--> RandomExploration: Random Number \< Epsilon
-
-        CheckEpsilon \--> GreedyExploitation: Random Number >= Epsilon
-
-        RandomExploration \--> ActionSelected: Select Random Action (a)
-
-        GreedyExploitation \--> ActionSelected: Select ArgMax Q(s, a)
-
+        [*] --> CheckEpsilon
+        CheckEpsilon --> RandomExploration: Random Number < Epsilon
+        CheckEpsilon --> GreedyExploitation: Random Number >= Epsilon
+        RandomExploration --> ActionSelected: Select Random Action (a)
+        GreedyExploitation --> ActionSelected: Select ArgMax Q(s, a)
     }
 
-    PolicyEvaluation \--> RewardComputation: Apply Action (a)
-
-    RewardComputation \--> BufferStorage: Store (s, a, r, s') in Replay Buffer
-
-    BufferStorage \--> ModelUpdate: Sample Mini-Batch & Update Weights
-
-    ModelUpdate \--> Ingestion: Advance to Next State (s')
+    PolicyEvaluation --> RewardComputation: Apply Action (a)
+    RewardComputation --> BufferStorage: Store (s, a, r, s') in Replay Buffer
+    BufferStorage --> ModelUpdate: Sample Mini-Batch & Update Weights
+    ModelUpdate --> Ingestion: Advance to Next State (s')
+```
 
 ### 6.4 Reporting, Audit & Operational Alerting Requirements (BR-4.0)
 
@@ -399,53 +326,33 @@ stateDiagram-v2
 
 ## 9\. System Context & End-to-End Workflow
 
+```mermaid
 sequenceDiagram
-
     autonumber
-
     actor Sensor as Sensor Nodes / Network Switch
-
     participant Ingest as Data Ingestion & Preprocessing
-
     participant Env as RL Environment (State Matrix)
-
     participant Engine as Q-Learning Neural Network
-
     participant Replay as Experience Replay Buffer
-
     actor SOC as SOC Security Analyst
 
     Sensor->>Ingest: Stream Network Connection Telemetry
-
     Ingest->>Ingest: Clean, One-Hot Encode & Min-Max Normalize
-
     Ingest->>Env: Deliver Batch of 100 Connection States
-
     Env->>Engine: Transmit Current State Vector (s)
-
     Engine->>Engine: Compute Q(s, a) via Policy Network
-
     Engine->>Env: Execute Action a (Classify Normal / Threat)
-
     Env->>Env: Verify Action Against Environmental Truth
-
     Env->>Replay: Store Experience (s, a, r, s')
-
-    Replay->>Engine: Sample Mini-Batch (Size 300\) for Weight Update
-
+    Replay->>Engine: Sample Mini-Batch (Size 300) for Weight Update
     Engine->>Engine: Update Loss via Adam Optimizer
 
     alt Malicious Threat Detected (DoS, Probe, U2R, R2L)
-
         Engine->>SOC: Dispatch Real-Time Categorized Threat Alert
-
     else Normal Traffic Verified
-
         Engine->>Engine: Log Silent Verification
-
     end
-
----
+```
 
 ## 10\. Glossary of Terms
 
