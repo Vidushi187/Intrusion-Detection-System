@@ -52,20 +52,20 @@ Modern critical infrastructure networks generate heterogeneous sensory traffic c
 
 An adaptive, reinforcement-learning-driven analytics engine is required to observe sensory network telemetry, estimate threat states, predict high-confidence threat classifications, and maintain high detection accuracy with minimized false alarm rates.
 
-flowchart LR
-```mermaid
+```mermaid flowchart LR
 
-    A\[Sensory Network Telemetry\\nTraffic Logs & Sensor Bursts\] \--\> B\[Data Ingestion & Normalization\\nOne-Hot Encoding & Range Scaling\]
 
-    B \--\> C\[Reinforcement Learning Engine\\nQ-Learning & Experience Replay\]
+    A[Sensory Network Telemetry\\nTraffic Logs & Sensor Bursts] \--> B[Data Ingestion & Normalization\\nOne-Hot Encoding & Range Scaling]
 
-    C \--\> D\[Threat Classification Module\]
+    B \--> C[Reinforcement Learning Engine\\nQ-Learning & Experience Replay]
 
-    D \--\> E\[Normal Traffic\\nAuto-Approved\]
+    C \--> D[Threat Classification Module]
 
-    D \--\> F\[Classified Attack Alert\\nDoS, Probe, U2R, R2L\]
+    D \--> E[Normal Traffic\\nAuto-Approved]
 
-    F \--\> G\[Incident Response & SOC Dispatch\]
+    D \--> F[Classified Attack Alert\\nDoS, Probe, U2R, R2L]
+
+    F \--> G[Incident Response & SOC Dispatch]
 
 ```
 ---
@@ -105,7 +105,7 @@ The success of the platform SHALL be measured against the following empirical be
    * Extraction of host-based traffic volume metrics, service error rates, and host-variance counters.  
 2. **Automated Feature Engineering & Encoding**:  
    * Categorical feature transformation via one-hot encoding without manual intervention.  
-   * Numerical min-max feature scaling normalized to bounded continuous intervals \$\[0, 1\]\$.  
+   * Numerical min-max feature scaling normalized to bounded continuous intervals \$[0, 1]\$.  
    * Multi-label threat classification mapping from raw granular attack strings to four standardized operational classes (DoS, Probe, U2R, R2L).  
 3. **Reinforcement Learning Decision Pipeline**:  
    * Dynamic environment simulation where telemetry batches represent sequential environment states.  
@@ -129,17 +129,17 @@ The success of the platform SHALL be measured against the following empirical be
 
 graph TD
 
-    A\[Project Stakeholders\]
+    A[Project Stakeholders]
 
-    A \--\> B\[Security Operations Center Analyst\]
+    A \--> B[Security Operations Center Analyst]
 
-    A \--\> C\[Critical Infrastructure Operator\]
+    A \--> C[Critical Infrastructure Operator]
 
-    A \--\> D\[Network Security Architect\]
+    A \--> D[Network Security Architect]
 
-    A \--\> E\[Machine Learning Engineer\]
+    A \--> E[Machine Learning Engineer]
 
-    A \--\> F\[Compliance & Audit Officer\]
+    A \--> F[Compliance & Audit Officer]
 
 ### 5.1 Stakeholder Matrix
 
@@ -175,7 +175,7 @@ graph TD
 | :---- | :---- | :---- | :---- | :---- |
 | **BR-1.1** | **Must Have** | Ingestion of Telemetry Records | The system SHALL ingest structured network connection records comprising network duration, protocol type, service destination, connection flags, payload byte counters, and host-level error metrics. | Ingest pipeline successfully parses 41 foundational network telemetry attributes from standard tabular streams without data loss. |
 | **BR-1.2** | **Must Have** | Categorical Encoding | The system SHALL convert categorical telemetry features (protocol types, service protocols, connection flags) into binary one-hot encoded representations. | Categorical attributes are mapped into discrete binary flags; all output columns contain strictly 0 or 1 values. |
-| **BR-1.3** | **Must Have** | Min-Max Normalization | The system SHALL scale all continuous numerical attributes to a uniform bounded range of \$\[0.0, 1.0\]\$ based on feature-specific boundary limits. | All continuous numerical features fall strictly within the interval \$\[0.0, 1.0\]\$; zero-variance columns default safely to 0 without division-by-zero errors. |
+| **BR-1.3** | **Must Have** | Min-Max Normalization | The system SHALL scale all continuous numerical attributes to a uniform bounded range of \$[0.0, 1.0]\$ based on feature-specific boundary limits. | All continuous numerical features fall strictly within the interval \$[0.0, 1.0]\$; zero-variance columns default safely to 0 without division-by-zero errors. |
 | **BR-1.4** | **Must Have** | Data Batch Segmentation | The system SHALL segment processed telemetry into configurable batches (defaulting to 100 records per evaluation window) to simulate sequential environment steps. | Data is sequentially processed in batches of 100; batch boundaries maintain record integrity and feature alignment. |
 | **BR-1.5** | **Should Have** | Automated Data Cleansing | The system SHOULD detect and handle malformed fields, out-of-range sensor readings, or invalid flag states prior to state generation. | Malformed rows are isolated into an exception log and do not abort the active batch evaluation cycle. |
 
@@ -194,7 +194,7 @@ classDiagram
 
     class ThreatTaxonomy {
 
-        \<\<enumeration\>\>
+        \<\<enumeration>>
 
         NORMAL
 
@@ -310,35 +310,35 @@ classDiagram
 
 stateDiagram-v2
 
-    \[\*\] \--\> Ingestion: New Telemetry Batch
+    [\*] \--> Ingestion: New Telemetry Batch
 
-    Ingestion \--\> StateExtraction: Normalize & Format
+    Ingestion \--> StateExtraction: Normalize & Format
 
-    StateExtraction \--\> PolicyEvaluation: Observe State (s)
+    StateExtraction \--> PolicyEvaluation: Observe State (s)
 
     
 
     state PolicyEvaluation {
 
-        \[\*\] \--\> CheckEpsilon
+        [\*] \--> CheckEpsilon
 
-        CheckEpsilon \--\> RandomExploration: Random Number \< Epsilon
+        CheckEpsilon \--> RandomExploration: Random Number \< Epsilon
 
-        CheckEpsilon \--\> GreedyExploitation: Random Number \>= Epsilon
+        CheckEpsilon \--> GreedyExploitation: Random Number >= Epsilon
 
-        RandomExploration \--\> ActionSelected: Select Random Action (a)
+        RandomExploration \--> ActionSelected: Select Random Action (a)
 
-        GreedyExploitation \--\> ActionSelected: Select ArgMax Q(s, a)
+        GreedyExploitation \--> ActionSelected: Select ArgMax Q(s, a)
 
     }
 
-    PolicyEvaluation \--\> RewardComputation: Apply Action (a)
+    PolicyEvaluation \--> RewardComputation: Apply Action (a)
 
-    RewardComputation \--\> BufferStorage: Store (s, a, r, s') in Replay Buffer
+    RewardComputation \--> BufferStorage: Store (s, a, r, s') in Replay Buffer
 
-    BufferStorage \--\> ModelUpdate: Sample Mini-Batch & Update Weights
+    BufferStorage \--> ModelUpdate: Sample Mini-Batch & Update Weights
 
-    ModelUpdate \--\> Ingestion: Advance to Next State (s')
+    ModelUpdate \--> Ingestion: Advance to Next State (s')
 
 ### 6.4 Reporting, Audit & Operational Alerting Requirements (BR-4.0)
 
@@ -415,33 +415,33 @@ sequenceDiagram
 
     actor SOC as SOC Security Analyst
 
-    Sensor-\>\>Ingest: Stream Network Connection Telemetry
+    Sensor->>Ingest: Stream Network Connection Telemetry
 
-    Ingest-\>\>Ingest: Clean, One-Hot Encode & Min-Max Normalize
+    Ingest->>Ingest: Clean, One-Hot Encode & Min-Max Normalize
 
-    Ingest-\>\>Env: Deliver Batch of 100 Connection States
+    Ingest->>Env: Deliver Batch of 100 Connection States
 
-    Env-\>\>Engine: Transmit Current State Vector (s)
+    Env->>Engine: Transmit Current State Vector (s)
 
-    Engine-\>\>Engine: Compute Q(s, a) via Policy Network
+    Engine->>Engine: Compute Q(s, a) via Policy Network
 
-    Engine-\>\>Env: Execute Action a (Classify Normal / Threat)
+    Engine->>Env: Execute Action a (Classify Normal / Threat)
 
-    Env-\>\>Env: Verify Action Against Environmental Truth
+    Env->>Env: Verify Action Against Environmental Truth
 
-    Env-\>\>Replay: Store Experience (s, a, r, s')
+    Env->>Replay: Store Experience (s, a, r, s')
 
-    Replay-\>\>Engine: Sample Mini-Batch (Size 300\) for Weight Update
+    Replay->>Engine: Sample Mini-Batch (Size 300\) for Weight Update
 
-    Engine-\>\>Engine: Update Loss via Adam Optimizer
+    Engine->>Engine: Update Loss via Adam Optimizer
 
     alt Malicious Threat Detected (DoS, Probe, U2R, R2L)
 
-        Engine-\>\>SOC: Dispatch Real-Time Categorized Threat Alert
+        Engine->>SOC: Dispatch Real-Time Categorized Threat Alert
 
     else Normal Traffic Verified
 
-        Engine-\>\>Engine: Log Silent Verification
+        Engine->>Engine: Log Silent Verification
 
     end
 
@@ -454,7 +454,7 @@ sequenceDiagram
 * **Experience Replay Memory**: A technique in reinforcement learning where past transitions are stored in a rolling buffer and randomly sampled during neural network training to break temporal autocorrelation.  
 * **F1-Score**: The harmonic mean of Precision and Recall, measuring the overall balance between false positives and false negatives.  
 * **Intrusion Detection System (IDS)**: A software or hardware appliance that monitors network traffic or system events for policy violations and unauthorized activity.  
-* **Min-Max Normalization**: A data transformation method scaling numeric values into a standardized continuous interval \$\[0, 1\]\$.  
+* **Min-Max Normalization**: A data transformation method scaling numeric values into a standardized continuous interval \$[0, 1]\$.  
 * **MoSCoW**: A requirement prioritization framework classifying items as Must Have, Should Have, Could Have, or Won't Have.  
 * **NSL-KDD / KDDCup99**: Standardized, academically recognized benchmark datasets representing comprehensive normal and malicious network connection records.  
 * **Probe (Probing / Reconnaissance)**: An attack category where an adversary scans network ports, host vulnerabilities, and topology to map out defense perimeters.  
