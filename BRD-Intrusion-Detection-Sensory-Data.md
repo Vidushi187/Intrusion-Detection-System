@@ -30,7 +30,7 @@ All business requirements are assigned a priority based on the MoSCoW framework:
 
 ### 2.1 Purpose
 
-This Business Requirements Document (BRD) formalizes the operational, functional, and governance requirements for an intelligent, autonomous Intrusion Detection System (IDS) tailored for large-scale sensory networks and critical infrastructure. The platform leverages model-free Reinforcement Learning (Q-learning) to dynamically evaluate streaming telemetry, detect anomalous network behavior, classify sophisticated attack patterns, and adapt to evolving threats without relying solely on static signature databases.
+This Business Requirements Document (BRD) formalizes the operational, functional, and governance requirements for an intelligent, autonomous Intrusion Detection System (IDS) tailored for critical infrastructure containing sensors. The platform leverages model-free Reinforcement Learning (Q-learning) to dynamically evaluate streaming telemetry, detect anomalous network behavior, classify sophisticated attack patterns, and adapt to evolving threats without relying solely on static signature databases.
 
 ### 2.2 Background & Operational Context
 
